@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Store.Base.Models.Campaign>
+
+@{
+    ViewData["Title"] = "Not Approve Campaigns";
+}
+
+<h1>Not Approve Campaigns</h1>
+<br />
+<table id="table_id" class="display">
+    <thead>
+        <tr>
+            <th>Vendor Name</th>
+            <th>Vendor Username</th>
+            <th>@Html.DisplayNameFor(model => model.Title)</th>
+            <th>@Html.DisplayNameFor(model => model.ExpireDate)</th>
+            <th>@Html.DisplayNameFor(model => model.Points)</th>
+            <th>@Html.DisplayNameFor(model => model.CampaignTypes.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.IsApproved)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Vendor.User.FullName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Vendor.User.UserName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ExpireDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Points)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CampaignTypes.Name)</td>
+                    <td>
+                            <a class="btn btn-danger text-white" onclick="Lock(@item.Id, this, `@item.Title`)" @*asp-action="UnLock" asp-route-id="@item.Id" asp-route-returnUrl="@Url.Action("NotApprovedCampaigns", "Campaign", new { area = "Admin" })"*@>
+                                <i class="fas fa-lock"></i>
+                            </a>
+                        
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+
+        function Lock(id, element, camTitle) {
+
+            $.post('https://localhost:44356/Admin/Campaign/Lock/', { id: id },
+                function (returnedData) {
+                    if (returnedData == 2) {
+                        $(element).parent().parent().hide();
+                        Notiflix.Notify.Success('The campaign '+ camTitle + " approved");
+                    }
+                });
+        }
+
+    </script>
+}

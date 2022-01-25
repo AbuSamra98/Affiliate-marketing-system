@@ -1,0 +1,24 @@
+﻿@model Store.Base.Models.Message
+
+@{
+    ViewData["Title"] = "Message";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<div class="p-4 border rounded">
+
+    <div class="row">
+        <div class="col-lg-4">
+            <label>Message</label>
+        </div>
+        <div class="col-lg-8">
+            <div>@Model.Text</div>
+            <span class="text-xs">@Model.SendDate</span>
+        </div>
+    </div>
+
+</div>
+
+

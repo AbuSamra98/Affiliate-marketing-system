@@ -1,0 +1,27 @@
+﻿@model Store.Base.Models.AboutUs
+
+@{
+    ViewData["Title"] = "About Us";
+}
+
+<h1>@ViewData["Title"]</h1>
+<br />
+<input id="getAboutUs" type="text" value="@Model.Description" hidden />
+<div id="aboutUs"></div>
+@*<pre style="white-space:pre-wrap">@Model.Description</pre>*@
+
+
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+            var aboutUs = $('#getAboutUs').val();
+
+            $('#aboutUs').html($(aboutUs));
+        });
+
+    </script>
+}
+
+

@@ -1,0 +1,194 @@
+﻿@model Store.Base.Models.ViewModels.SendMessageViewModel
+
+@{
+    ViewData["Title"] = "Send Message";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-lg-2">
+            <label>Send message for</label>
+        </div>
+        <div class="col-lg-5">
+            <select asp-for="SendForSelect" class="form-control">
+                <option value="1">Specific Vendor</option>
+                <option value="2">Specific Marketer</option>
+                <option value="3">All Vendors</option>
+                <option value="4">All Marketers</option>
+            </select>
+        </div>
+        @*<div class="col-lg-2">
+                <div hidden id="userSearch" class="input-group">
+                    <input asp-for="ReceiverUserId" class="form-control searchable-input" />
+                    <span class="input-group-btn">
+                        <button class="btn blue tooltips" type="button" data-title="Search/بحث" data-toggle="modal" data-target="#SearchEmpModal"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
+            </div>*@
+        <div id="userSearch" class="col-lg-3">
+            <div class="input-group">
+                <input asp-for="UserName" class="form-control" type="text" placeholder="Search for user" aria-label="Search" aria-describedby="basic-addon2" />
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#SearchUsers"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-lg-2">
+            <label asp-for="Text"></label>
+        </div>
+        <div class="col-lg-8">
+            <textarea asp-for="Text" class="form-control"></textarea>
+        </div>
+    </div>
+    <br />
+    <div class="form-group">
+        <input type="submit" class="btn btn-primary" value="Send" />
+    </div>
+
+</form>
+
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="SearchUsers" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Users</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @*<table id="UsersTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>FullName</th>
+                                <th>UserName</th>
+
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>FullName</th>
+                                <th>UserName</th>
+
+                            </tr>
+                        </tfoot>
+                    </table>*@
+                <table style="width:100%" class="table table-striped table-bordered table-hover order-column" id="UsersTable"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var sendForSelect = document.getElementById("SendForSelect");
+
+        $('#UsersTable').DataTable({
+            ajax: {
+                url: 'https://localhost:44356/Admin/Message/GetVendors/',
+                dataSrc: ''
+            },
+            columns: [
+                { data: 'user.fullName', title: 'FullName', "width": "50%" },
+                { data: 'user.userName', title: 'UserName', "width": "50%" },
+                {
+                    "data": null,
+                    "title": "Select",
+                    "render": function (d) {
+                        return '<button class="btn btn-success btn-sm select-item tooltips" data-title="Select" id="' + d.user.userName + '" data->Select</button>';
+                    }
+                },
+                //{ data: 'salary' },
+                //{ data: 'office' }
+            ]
+        });
+
+        var table = $('#UsersTable').DataTable();
+
+        sendForSelect.addEventListener("change", function () {
+            if (sendForSelect.value == "1") {
+                document.getElementById("userSearch").hidden = false;
+                $("#UserName").val(null);
+
+
+                table.clear();
+                table.destroy();
+                //DataTable
+                $('#UsersTable').DataTable({
+                    ajax: {
+                        url: 'https://localhost:44356/Admin/Message/GetVendors/',
+                        dataSrc: ''
+                    },
+                    columns: [
+                        { data: 'user.fullName', title: 'FullName', "width": "50%" },
+                        { data: 'user.userName', title: 'UserName', "width": "50%" },
+                        {
+                            "data": null,
+                            "title": "Select",
+                            "render": function (d) {
+                                return '<button class="btn btn-success btn-sm select-item tooltips" data-title="Select" id="' + d.user.userName + '" data->Select</button>';
+                            }
+                        },
+
+                    ]
+                });
+            } else if (sendForSelect.value == "2") {
+                document.getElementById("userSearch").hidden = false;
+                $("#UserName").val(null);
+
+                table.clear();
+                table.destroy();
+                //DataTable
+                $('#UsersTable').DataTable({
+                    ajax: {
+                        url: 'https://localhost:44356/Admin/Message/GetMarketers/',
+                        dataSrc: ''
+                    },
+                    columns: [
+                        { data: 'user.fullName', title: 'FullName', "width": "50%" },
+                        { data: 'user.userName', title: 'UserName', "width": "50%" },
+                        {
+                            "data": null,
+                            "title": "Select",
+                            "render": function (d) {
+                                return '<button class="btn btn-success btn-sm select-item tooltips" data-title="Select" id="' + d.user.userName + '" data->Select</button>';
+                            }
+                        },
+                    ]
+                });
+            }
+            else {
+                document.getElementById("userSearch").hidden = true;
+                $("#UserName").val(null);
+            }
+        });
+
+
+
+
+        $(document).on('click', '.select-item', function (e) {
+            e.preventDefault();
+            $(this).closest('.modal.fade').modal('hide');
+            $("#UserName").val($(this).attr('id'));
+            return false;
+        });
+
+    </script>
+}

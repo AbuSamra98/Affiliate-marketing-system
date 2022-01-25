@@ -1,0 +1,135 @@
+﻿@model Store.Base.Models.ViewModels.CampaignViewModel
+@using Store.Base.Extensions      @*for select list*@
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<br />
+<h2 class="text-info">Create Campaign</h2>
+
+<form method="post" enctype="multipart/form-data">
+    @*(enctype="multipart/form-data") to upload image in form*@
+    <div class="p-4 border rounded">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Campaign.Title"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Campaign.Title" class="form-control" />
+            </div>
+            <span asp-validation-for="Campaign.Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Campaign.Summary"></label>
+            </div>
+            <div class="col-5">
+                <textarea asp-for="Campaign.Summary" class="form-control" rows="2"></textarea>
+            </div>
+            <span asp-validation-for="Campaign.Summary" class="text-danger"></span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Campaign.Desc"></label>
+            </div>
+            <div class="col-5">
+                <textarea asp-for="Campaign.Desc" class="form-control" rows="4"></textarea>
+            </div>
+            <span asp-validation-for="Campaign.Desc" class="text-danger"></span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Campaign.Image"></label>
+            </div>
+            <div class="col-5">
+                <input required type="file" name="file" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row" hidden>
+            <div class="col-2">
+                <label asp-for="CampaignTypes"></label>
+            </div>
+            <div class="col-5">
+                <select asp-for="@Model.Campaign.CampaignTypeId" asp-items="Model.CampaignTypes.ToSelectListItem(Model.Campaign.CampaignTypeId)" class="form-control"></select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Campaign.Points"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Campaign.Points" class="form-control" />
+            </div>
+            <span asp-validation-for="Campaign.Points" class="text-danger"></span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Campaign.URL"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Campaign.URL" class="form-control" />
+            </div>
+            <span asp-validation-for="Campaign.URL" class="text-danger"></span>
+        </div>
+
+        @*<div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Campaign.ExpireDate"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Campaign.ExpireDate" autocomplete="off" value="" type="text" id="datepicker" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Campaign.ExpireTime"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Campaign.ExpireTime" autocomplete="off" value="" type="text" class="timepicker form-control" />
+            </div>
+        </div>*@
+
+        <br />
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Create" />
+            <a asp-action="Index" class="btn btn-success">Back to List</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            minDate: +1,
+            //maxDate: "+3M",     //min data is tomorrow(+1) and max date is 3 months("+3M") after min date(tomorrow)
+            dateFormat: 'mm-dd-yy'
+        });
+
+
+        $('.timepicker').timepicker({
+            timeFormat: 'h:mm p',
+            interval: 60,
+            //minTime: '10',
+            //maxTime: '6:00pm',
+            startTime: '10:00',
+            dynamic: true,
+            dropdown: true,
+            scrollbar: true
+        });
+    });
+
+    notification();
+
+</script>
+}

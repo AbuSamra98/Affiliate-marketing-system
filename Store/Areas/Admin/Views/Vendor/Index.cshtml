@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Store.Base.Models.Vendor>
+
+@{
+    ViewData["Title"] = "Vendors";
+}
+
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">Vendors List</h2>
+    </div>
+</div>
+
+<br />
+<br />
+<table id="table_id" class="display">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.User.FullName)</th>
+            <th>@Html.DisplayNameFor(model => model.User.UserName)</th>
+            <th>@Html.DisplayNameFor(model => model.Points)</th>
+            <th>Approval</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.User.FullName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Points)</td>
+                    <td>
+                        @if (item.User.LockoutEnd == null || item.User.LockoutEnd < DateTime.Now)
+                        {
+                            <a class="btn btn-success text-white" onclick="Lock(`@item.User.UserName`, this)" @*asp-area="Admin" asp-controller="Vendor" asp-action="Lock" asp-route-id="@item.VendorId" asp-route-returnUrl="@Url.Action("Index", "Vendor", new { area = "Admin" })"*@>
+                                <i class="fas fa-lock-open"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-danger text-white" onclick="Lock(`@item.User.UserName`, this)">
+                                <i class="fas fa-lock"></i>
+                            </a>
+                        }
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a type="button" class="btn btn-success" asp-action="Details" asp-route-id="@item.VendorId">
+                                <i class="far fa-list-alt"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+
+
+        function Lock(UserName, element) {
+            
+            $.post('https://localhost:44356/Admin/Vendor/Lock/', { userName: UserName}, 
+                function (returnedData) {
+                    if (returnedData == 1) {
+                        $(element).toggleClass("btn-success");
+                        $(element).toggleClass("btn-danger");
+                        $(element).html(`<i class="fas fa-lock"></i>`);
+                        Notiflix.Notify.Warning('The user '+ UserName + " blocked");
+                    } else {
+                        $(element).toggleClass("btn-success");
+                        $(element).toggleClass("btn-danger");
+                        $(element).html(`<i class="fas fa-lock-open"></i>`);
+                        Notiflix.Notify.Success('The user '+ UserName + " approved");
+                    }
+            });
+        }
+
+        //$('#BooksBtn').on('click', function () {
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: 'https://localhost:44304/products.json',
+        //        success: function (result) {
+        //        }
+        //    });
+        //});
+
+    </script>
+}

@@ -1,0 +1,142 @@
+﻿@model Store.Base.Models.Campaign
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<br />
+<h2 class="text-info">Product Details</h2>
+
+<form method="post">
+    <div class="p-4 border rounded row">
+        <div class="col-8">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Title"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Title" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Desc"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Desc" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="CampaignTypes"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="CampaignTypes.Name" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Points"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Points" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="ExpireDate"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="ExpireDate" readonly type="text" id="date" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="ExpireTime"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="ExpireTime" readonly autocomplete="off" type="text" class="timepicker form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-1"></div>
+
+        <div class="col-3">
+            <div>
+                @if (@Model.Image != null)
+                {
+                    <img src="@Model.Image" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+                }
+                else
+                {
+                    <img src="\images\CampaignImage\default_image.png" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+                }
+            </div>
+
+            <br />
+            <div>
+                @if (@Model.IsApproved)
+                {
+                    <span><i class="far fa-check-circle"></i> The Campaign Approved</span>
+                }
+                else
+                {
+                    <span><i class="fas fa-exclamation-triangle">The Campaign not Approved</i></span>
+                }
+            </div>
+
+        </div>
+
+
+        <br />
+        <div class="form-group">
+            <input type="submit" class="btn btn-danger" asp-route-id="@Model.Id" value="Delete" />
+            <a asp-action="Index" class="btn btn-success">Back to List</a>
+        </div>
+    </div>
+</form>
+
+
+
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(function () {
+            $("#datepicker").datepicker({
+                minDate: +1,
+                //maxDate: "+3M",     //min data is tomorrow(+1) and max date is 3 months("+3M") after min date(tomorrow)
+                dateFormat: 'mm-dd-yy'
+            });
+        });
+
+
+        $(document).ready(function () {
+            var appointmentTime = document.getElementById('date').value;
+            var splitData = "";
+            if (appointmentTime.indexOf(" ") > 0) {
+                splitData = appointmentTime.split(" ");
+            }
+            else {
+                splitData = appointmentTime.split("T");         //the space in some browsers may be ('T')
+            }
+            var time = splitData[1].substring(0, 5);
+            if (time.slice(-1) == ":") {
+                time = time.substring(0, time.length - 1);
+            }
+            var amPmTime = splitData[2];
+            $('#date').attr('value', splitData[0]);
+            $('.timepicker').attr('value', time + ' ' + amPmTime);
+        });
+
+        notification();
+
+    </script>
+}

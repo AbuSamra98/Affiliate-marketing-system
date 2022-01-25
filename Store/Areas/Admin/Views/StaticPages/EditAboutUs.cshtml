@@ -1,0 +1,34 @@
+﻿@model Store.Base.Models.AboutUs
+
+
+@{
+    ViewData["Title"] = "Edit About Us Page";
+}
+
+<h1>@ViewData["Title"]</h1>
+<br />
+<form method="post">
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="summernote">@Model.Description</textarea>
+        @*<textarea asp-for="Description" class="form-control" rows="6"></textarea>*@
+    </div>
+    <br />
+    <div class="form-group">
+        <input type="submit" class="btn btn-primary" value="Edit" />
+    </div>
+
+</form>
+
+
+@section Scripts{
+    <script>
+       
+        $(document).ready(function() {
+            $('.summernote').summernote();
+        });
+
+    </script>
+}
+

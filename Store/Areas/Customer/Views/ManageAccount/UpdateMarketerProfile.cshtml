@@ -1,0 +1,72 @@
+﻿@model Store.Base.Models.ViewModels.UpdateMarketerProfileViewModel
+@using Store.Base.Extensions
+@{
+    ViewData["Title"] = "Update Profile";
+}
+
+
+<h2>Manage your account</h2>
+
+<div>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <partial name="_ManageNav" />
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-6">
+                    <form method="post">
+                        <h4>@ViewData["Title"]</h4>
+                        <hr />
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="FullName"></label>
+                            <input asp-for="FullName" class="form-control" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="countries"></label>
+                            <select asp-for="@Model.CountryId" asp-items="Model.countries.ToSelectListItem(Model.CountryId)" class="form-control"></select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="WebsiteURL"></label>
+                            <input asp-for="WebsiteURL" class="form-control" />
+                            <span asp-validation-for="WebsiteURL" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Facebook"></label>
+                            <input asp-for="Facebook" class="form-control" />
+                            <span asp-validation-for="Facebook" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Twitter"></label>
+                            <input asp-for="Twitter" class="form-control" />
+                            <span asp-validation-for="Twitter" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Instagram"></label>
+                            <input asp-for="Instagram" class="form-control" />
+                            <span asp-validation-for="Instagram" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="YouTube"></label>
+                            <input asp-for="YouTube" class="form-control" />
+                            <span asp-validation-for="YouTube" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Other"></label>
+                            <input asp-for="Other" class="form-control" />
+                            <span asp-validation-for="Other" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

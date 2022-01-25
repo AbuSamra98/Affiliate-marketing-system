@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Store.Base.Models.Vendor>
+
+@{
+    ViewData["Title"] = "Not Approved Vendors";
+}
+
+    <h1>Not Approved Vendors</h1>
+<br />
+<table id="table_id" class="display">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.User.FullName)</th>
+            <th>@Html.DisplayNameFor(model => model.User.UserName)</th>
+            <th>@Html.DisplayNameFor(model => model.Points)</th>
+            <th>@Html.DisplayNameFor(model => model.User.LockoutEnd)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.User.FullName)</td>
+                <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Points)</td>
+                <td>
+                    @*@if (item.User.LockoutEnd == null || item.User.LockoutEnd < DateTime.Now)
+                    {
+                        <a class="btn btn-success text-white" asp-action="Lock" asp-route-id="@item.User.Id">
+                            <i class="fas fa-lock-open"></i>
+                        </a>
+                    }
+                    else
+                    {*@
+                        <a class="btn btn-danger text-white" onclick="Lock(`@item.User.UserName`, this)">
+                            <i class="fas fa-lock"></i>
+                        </a>
+                    @*}*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+
+        function Lock(UserName, element) {
+
+            $.post('https://localhost:44356/Admin/Vendor/Lock/', { userName: UserName },
+                function (returnedData) {
+                    if (returnedData == 2) {
+                        $(element).parent().parent().hide();
+                        Notiflix.Notify.Success('The user '+ UserName + " approved");
+                    }
+                });
+        }
+
+    </script>
+}

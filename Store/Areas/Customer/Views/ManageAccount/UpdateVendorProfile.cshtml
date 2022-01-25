@@ -1,0 +1,72 @@
+﻿@model Store.Base.Models.ViewModels.UpdateVendorProfileViewModel
+@using Store.Base.Extensions
+@{
+    ViewData["Title"] = "Update Profile";
+}
+
+<h2>Manage your account</h2>
+
+<div>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <partial name="_ManageNav" />
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-6">
+                    <form method="post">
+                        <h4>@ViewData["Title"]</h4>
+                        <hr />
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="UpdateVendorProfileRequest.FullName"></label>
+                            <input asp-for="UpdateVendorProfileRequest.FullName" class="form-control" />
+                            <span asp-validation-for="UpdateVendorProfileRequest.FullName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdateVendorProfileRequest.PhoneNumber"></label>
+                            <input asp-for="UpdateVendorProfileRequest.PhoneNumber" class="form-control" />
+                            <span asp-validation-for="UpdateVendorProfileRequest.PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdateVendorProfileRequest.OrganizationAndCompany"></label>
+                            <input asp-for="UpdateVendorProfileRequest.OrganizationAndCompany" class="form-control" />
+                            <span asp-validation-for="UpdateVendorProfileRequest.OrganizationAndCompany" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdateVendorProfileRequest.WebsiteURL"></label>
+                            <input asp-for="UpdateVendorProfileRequest.WebsiteURL" class="form-control" />
+                            <span asp-validation-for="UpdateVendorProfileRequest.WebsiteURL" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Countries"></label>
+                            <select asp-for="@Model.UpdateVendorProfileRequest.CountryId" asp-items="Model.Countries.ToSelectListItem(Model.UpdateVendorProfileRequest.CountryId)" class="form-control"></select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdateVendorProfileRequest.City"></label>
+                            <input asp-for="UpdateVendorProfileRequest.City" class="form-control" />
+                            <span asp-validation-for="UpdateVendorProfileRequest.City" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdateVendorProfileRequest.Address"></label>
+                            <input asp-for="UpdateVendorProfileRequest.Address" class="form-control" />
+                            <span asp-validation-for="UpdateVendorProfileRequest.Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdateVendorProfileRequest.ZIP"></label>
+                            <input asp-for="UpdateVendorProfileRequest.ZIP" class="form-control" />
+                            <span asp-validation-for="UpdateVendorProfileRequest.ZIP" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

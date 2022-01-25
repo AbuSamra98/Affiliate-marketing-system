@@ -1,0 +1,124 @@
+﻿@model Store.Base.Models.Marketer
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<br />
+<h2 class="text-info">Marketer Details</h2>
+
+<div class="p-4 border rounded row">
+    <div class="col-12">
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="User.FullName"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="User.FullName" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="User.UserName"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="User.UserName" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="User.Email"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="User.Email" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="User.StartDate"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="User.StartDate" readonly type="text" id="date" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Country"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Country.Name" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Points"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Points" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Facebook"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Facebook" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Twitter"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Twitter" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Instagram"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Instagram" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="YouTube"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="YouTube" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Other"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Other" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Salary"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Salary" class="form-control" readonly />
+            </div>
+        </div>
+    </div>
+
+</div>

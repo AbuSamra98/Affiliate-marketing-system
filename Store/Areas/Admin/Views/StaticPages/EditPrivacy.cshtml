@@ -1,0 +1,33 @@
+﻿@model Store.Base.Models.PrivacyPolicy
+
+
+@{
+    ViewData["Title"] = "Edit Privacy Policy Page";
+}
+
+<h1>@ViewData["Title"]</h1>
+<br />
+<form method="post">
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="summernote">@Model.Description</textarea>
+    </div>
+    <br />
+    <div class="form-group">
+        <input type="submit" class="btn btn-primary" value="Edit" />
+    </div>
+
+</form>
+
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function() {
+            $('.summernote').summernote();
+        });
+
+    </script>
+}
+

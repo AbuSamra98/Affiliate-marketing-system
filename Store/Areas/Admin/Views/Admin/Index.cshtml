@@ -1,0 +1,98 @@
+﻿@model IEnumerable<Store.Base.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Admins";
+}
+
+
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">Admins List</h2>
+    </div>
+    <div class="col-6 text-right">
+        <a asp-action="Register" class="btn btn-info"><i class="fas fa-plus"></i>&nbsp; New Admin</a>
+    </div>
+</div>
+
+<br />
+<br />
+
+<table id="table_id" class="display">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.FullName)</th>
+            <th>@Html.DisplayNameFor(model => model.UserName)</th>
+            <th>@Html.DisplayNameFor(model => model.Email)</th>
+            @*<th>@Html.DisplayNameFor(model => model)</th>*@
+            <th>Approval</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.FullName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    @*<td>@Html.DisplayFor(modelItem => item)</td>*@
+                    <td>
+                        @if (item.LockoutEnd == null || item.LockoutEnd < DateTime.Now)
+                        {
+                            <a class="btn btn-success text-white" onclick="Lock(`@item.UserName`, this)">
+                                <i class="fas fa-lock-open"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-danger text-white" onclick="Lock(`@item.UserName`, this)">
+                                <i class="fas fa-lock"></i>
+                            </a>
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-danger text-white" asp-area="Admin" asp-controller="Admin" asp-action="EditRolesInUser" asp-route-id="@item.Id">
+                            <i class="fas fa-low-vision"></i> Permissions
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+
+
+
+        function Lock(UserName, element) {
+
+            $.post('https://localhost:44356/Admin/Admin/Lock/', { userName: UserName },
+                function (returnedData) {
+                    if (returnedData == 1) {
+                        $(element).toggleClass("btn-success");
+                        $(element).toggleClass("btn-danger");
+                        $(element).html(`<i class="fas fa-lock"></i>`);
+                        Notiflix.Notify.Warning('The user ' + UserName + " blocked");
+                    } else {
+                        $(element).toggleClass("btn-success");
+                        $(element).toggleClass("btn-danger");
+                        $(element).html(`<i class="fas fa-lock-open"></i>`);
+                        Notiflix.Notify.Success('The user ' + UserName + " approved");
+                    }
+                });
+        }
+
+    </script>
+}

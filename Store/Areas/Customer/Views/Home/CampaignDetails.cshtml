@@ -1,0 +1,174 @@
+﻿@model Store.Base.Models.ViewModels.CampaignDetailsViewModel
+
+@{
+    ViewData["Title"] = "Campaign Details";
+}
+
+<h1>CampaignDetails</h1>
+
+<div class="p-4 border rounded row">
+    <div class="col-8">
+        <div class="row">
+            <h3>@Model.Campaign.Title</h3>
+        </div>
+
+        <div class="row">
+            <p>@Model.Campaign.Summary</p>
+        </div>
+
+        <div class="row">
+            <p>@Model.Campaign.Desc</p>
+        </div>
+
+        <div class="row">
+            <p>Remaining points: </p><span>@Model.Campaign.Points</span>
+        </div>
+
+        <div class="row">
+            <p>Expiration date: </p><span>@Model.Campaign.ExpireDate</span>
+        </div>
+
+        <div class="row">
+            <p>Number of subscribers: </p><span>@Model.Campaign.SubscribersCount</span>
+        </div>
+
+        <div class="row">
+            <p>By: </p><span>@Model.Owner</span>
+        </div>
+    </div>
+
+    <div class="col-1"></div>
+
+    <div class="col-3">
+        <div>
+            @if (@Model.Campaign.Image != null)
+            {
+                <img src="@Model.Campaign.Image" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+            }
+            else
+            {
+                <img src="\images\CampaignImage\default_image.png" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+            }
+        </div>
+
+        <br />
+
+        <br />
+        <span>Number of Subscribers:&nbsp; @Model.Campaign.SubscribersCount</span>
+
+    </div>
+
+
+    <br />
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-success">Back</a>
+    </div>
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<h2>Related Campaigns</h2>
+
+<div id="parentElem" class="row">
+
+    @*@foreach (var item in Model.RelatedCampaigns)
+        {
+            <div class="card col-lg-3 col-md-5 col-sm-12" style="margin-top: 40px">
+                <img class="card-img-top" width="100%" src=@item.Image alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text">@item.Summary</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Remaining points: @item.Points</li>
+                    <li class="list-group-item">Expire Date: @item.ExpireDate</li>
+                    <li class="list-group-item">Number of subscribers: @item.SubscribersCount</li>
+                </ul>
+                <div class="card-body">
+                    <a onclick="Subscribe(@item.Id, this, `@item.Title`)" type="button" style="color:white" class="btn btn-primary addToCart">Subscribe</a>
+                    <a asp-action="CampaignDetails" asp-route-CampaignId="@item.Id" type="button" class="btn btn-primary">more</a>
+                </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-0">
+            </div>
+
+        }*@
+</div>
+
+
+
+@section Scripts{
+    <script>
+        var parentElem = document.getElementById("parentElem");
+
+        var counter = 0;
+        console.log("@Model.Owner");
+        $(window).scroll(function() {
+            if($(window).scrollTop() == $(document).height() - $(window).height()) {
+                   // ajax call get data from server and append to the div
+
+                $.get('https://localhost:44356/Customer/Home/GetRelatedCampaigns/', { userName: "@Model.Owner", counter: counter },
+                function (returnedData) {
+                    for (var i = 0; i < returnedData.length; i++) {
+                        var camCard = `<div class="card col-lg-3 col-md-5 col-sm-12" style="margin-top: 40px">
+                                            <img class="card-img-top" width="100%" src=`+ returnedData[i].image +` alt="Card image cap">
+                                            <div class="card-body">
+                                                <h5 class="card-title">` + returnedData[i].title +`</h5>
+                                                <p class="card-text">` + returnedData[i].summary +`</p>
+                                            </div>
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item">Remaining points: ` + returnedData[i].points +`</li>
+                                                <li class="list-group-item">Expire Date: ` + returnedData[i].expireDate +`</li>
+                                                <li class="list-group-item">Number of subscribers: ` + returnedData[i].subscribersCount +`</li>
+                                            </ul>
+                                            <div class="card-body">
+                                                <a onclick="Subscribe(` + returnedData[i].id +`, this, '` + returnedData[i].title +`')" type="button" style="color:white" class="btn btn-primary addToCart">Subscribe</a>
+                                                <a href="/Customer/Home/CampaignDetails?CampaignId=`+returnedData[i].id+`" type="button" class="btn btn-primary">more</a>
+                                            </div>
+                                        </div>
+                                    <div class="col-lg-1 col-md-1 col-sm-0">
+                                    </div>`
+                        parentElem.innerHTML += camCard;
+                    }
+
+                    counter++;
+
+                });
+
+            }
+        });
+
+
+
+        function Subscribe(campaignId, element, campaignTitle) {
+            $.post('https://localhost:44356/Marketer/MarketerCampaign/Subscribe/', { CampaignId: campaignId })
+                .done(function (returnedData) {
+                    debugger
+                    if (returnedData == 0) {
+
+                        Notiflix.Notify.Warning("You already subscribed the campaign " + campaignTitle);
+                    } else if (returnedData == 1) {
+
+                        Notiflix.Notify.Success("Subscibed the campaign " + campaignTitle + " successfully");
+                    } else if (returnedData == -1) {
+                        Notiflix.Notify.Failure("Can't Subscibe the campaign " + campaignTitle + ",refresh the page please");
+                    }
+                })
+                .fail(function (returnedData) {
+                    //console.log(returnedData);
+                    Notiflix.Confirm.Show('You should login as a marketer', 'Do you have a marketer account?', 'Yes', 'No',
+                        function () { // Yes button
+                            window.location.href = 'https://localhost:44356/Customer/Account/Login';
+                        }, function () { // No button
+                            window.location.href = 'https://localhost:44356/Customer/Account/MarketerRegister';
+                        });
+                    //Notiflix.Notify.Warning("You should login as a marketer to subscibe the campaign");
+                });
+        }
+
+
+    </script>
+}

@@ -1,0 +1,141 @@
+﻿@model IEnumerable<Store.Base.Models.Campaign>
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+
+<h1>Subscribed campaigns</h1>
+<br />
+
+<form method="get">
+    <br /><br />
+
+    <div style="background-color:aliceblue">
+        <div class="col-12">
+            <div class="row" style="padding-top:10px;">
+                <div class="col-2">
+                    Name
+                </div>
+                <div class="col-3">
+                    @Html.Editor("searchName", new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col-2">
+
+                </div>
+                @*<div class="col-2">
+                        Email
+                    </div>
+                    <div class="col-3">
+                        @Html.Editor("searchEmail", new { htmlAttributes = new { @class = "form-control" } })
+                    </div>*@
+
+            </div>
+            <div class="row" style="padding-top:10px;">
+                <div class="col-2">
+                </div>
+                <div class="col-3">
+                </div>
+                <div class="col-2">
+
+                </div>
+                <div class="col-2">
+                </div>
+                <div class="col-3">
+                    <button type="submit" name="submit" value="Search" class="btn btn-primary form-control">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <br /><br />
+</form>
+
+@if (Model.Any())
+{
+    <div class="row">
+
+        @foreach (var item in Model)
+        {
+            <div class="card col-lg-3 col-md-5 col-sm-12" style="margin-top: 40px">
+                <img class="card-img-top" width="100%" src=@item.Image alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text">@item.Summary</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Remaining points: @item.Points</li>
+                    <li class="list-group-item">Expire Date: @item.ExpireDate</li>
+                    <li class="list-group-item">Number of subscribers: @item.SubscribersCount</li>
+                </ul>
+                <div class="card-body">
+                    <a asp-area="Marketer" asp-controller="MarketerCampaign" asp-action="UnSubscribe" asp-route-CampaignId=@item.Id type="button" class="btn btn-danger addToCart">Unsubscribe</a>
+                    <a asp-area="Customer" asp-controller="Home" asp-action="CampaignDetails" asp-route-CampaignId="@item.Id" type="button" class="btn btn-primary">more</a>
+                </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-0">
+            </div>
+
+        }
+    </div>
+
+}
+
+<br />
+
+
+@if ((int)ViewData["NumberOfPages"] > 1)
+{
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            @if ((int)ViewData["currentPage"] == 1)
+            {
+                <li class="page-item disabled"><a class="page-link">Previous</a></li>
+                @* Disabled *@
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-route-searchName="@ViewData["searchName"]" asp-route-CampaignPage="@((int)ViewData["currentPage"]-1)">Previous</a></li>
+            }
+            @for (int i = 1; i <= (int)ViewData["NumberOfPages"]; i++)
+            {
+                if ((int)ViewData["currentPage"] == i)
+                {
+                    <li id="@i" class="page-item disabled"><a disabled class="page-link">@i</a></li>
+                    @* Disabled *@
+                }
+                else
+                {
+                    <li id="@i" class="page-item"><a class="page-link" asp-action="Index" asp-route-searchName="@ViewData["searchName"]" asp-route-CampaignPage="@i">@i</a></li>
+                }
+            }
+            @if ((int)ViewData["currentPage"] == (int)ViewData["NumberOfPages"])
+            {
+                <li class="page-item disabled"><a class="page-link">Next</a></li>
+                @* Disabled *@
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-route-searchName="@ViewData["searchName"]" asp-route-CampaignPage="@((int)ViewData["currentPage"] + 1)">Next</a></li>
+            }
+        </ul>
+    </nav>
+}
+
+
+
+
+@section Scripts{
+    <script>
+        //var currentPage = ;
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+
+
+
+    </script>
+}

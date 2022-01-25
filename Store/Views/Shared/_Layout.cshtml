@@ -1,0 +1,487 @@
+﻿@using Store.Base.Utility
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Store</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+    <link href="~/css/notiflix-2.1.2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/jquery-ui.css" />
+    <link rel="stylesheet" href="~/css/jquery.timepicker.css" />
+    <link href="~/css/sb-admin-2.min.css" rel="stylesheet" />
+    <link href="~/css/styles.css" rel="stylesheet" />       @* start 1 *@
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote.min.css" rel="stylesheet">           @* for textArea *@
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+</head>
+
+
+<body class="@(SignInManager.IsSignedIn(User)? "sb-sidenav-toggled" : "")">
+
+    <nav class="sb-topnav navbar navbar-expand topbar navbar-dark bg-dark">
+        <a class="navbar-brand" asp-area="Customer" asp-controller="Home" asp-action="Index">Store</a>
+
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#">
+                <i class="fas fa-bars"></i>
+            </button><!-- Navbar Search-->
+        }
+        <a class="nav-link text-white" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
+        <a class="nav-link text-white" asp-area="Customer" asp-controller="Home" asp-action="AboutUs">About Us</a>
+        <a class="nav-link text-white" asp-area="Customer" asp-controller="Home" asp-action="HowItWorks">How it works</a>
+        <a class="nav-link text-white" asp-area="Customer" asp-controller="Home" asp-action="Privacy">Privacy policy</a>
+
+        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </form>
+        <!-- Navbar-->
+        @if (SignInManager.IsSignedIn(User))
+        {
+            @if (User.IsInRole(SD.VendorEndUser) || User.IsInRole(SD.MarketerEndUser))
+            {
+                <ul class="navbar-nav ml-auto">
+                    <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                    <li class="nav-item dropdown no-arrow d-sm-none">
+                        <!-- Dropdown - Messages -->
+                        <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                            <form class="form-inline mr-auto w-100 navbar-search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="button">
+                                            <i class="fas fa-search fa-sm"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+
+                    <!-- Nav Item - Messages -->
+                    <li id="messagesList" class="nav-item dropdown no-arrow mx-1">
+                        <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-envelope fa-fw"></i>
+                            <!-- Counter - Messages -->
+                            <span id="messagesCount" class="badge badge-danger badge-counter"></span>
+                        </a>
+                        <!-- Dropdown - Messages -->
+                        <div id="messagesDiv" class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
+                            <h6 class="dropdown-header">
+                                Message Center
+                            </h6>
+                            <div id="messagesId" style="max-height:300px; overflow:auto">
+
+                            </div>
+                            <a class="dropdown-item text-center small text-gray-500" onclick="getMessages()" href="#">Read More Messages</a>
+                        </div>
+
+                    </li>
+                </ul>
+            }
+
+            <ul class="navbar-nav ml-auto ml-md-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" asp-area="Customer" asp-controller="ManageAccount" asp-action="ChangePassword">Settings</a>@*<a class="dropdown-item" href="#">Activity Log</a>*@
+                        <div class="dropdown-divider"></div>
+                        <form class="dropdown-item" asp-area="Customer" asp-controller="Account" asp-action="Logout" )">
+                            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                        </form>
+                        @*<a class="dropdown-item" asp-area="Customer" asp-controller="Account" asp-action="Logout">Logout</a>*@
+                    </div>
+                </li>
+            </ul>
+        }
+        else
+        {
+            @*<li class="nav-item">*@
+            <a class="nav-link text-white" style="cursor: pointer" data-toggle="modal" data-target="#exampleModal">Register</a>
+            @*</li>*@
+            @*<li class="nav-item">*@
+            <a class="nav-link text-white" asp-area="Customer" asp-controller="Account" asp-action="Login">Login</a>
+            @*</li>*@
+        }
+
+    </nav>
+    <div id="layoutSidenav">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Core</div>
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDashboard" aria-expanded="false" aria-controls="collapseDashboard">
+                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                Dashboard
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseDashboard" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                    @if (User.IsInRole(SD.SuperAdminEndUser))
+                                    {
+                                        <a class="nav-link" asp-area="Admin" asp-controller="Analysis" asp-action="Index">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
+                                            Analysis
+                                        </a>
+                                    }
+                                    @if (User.IsInRole(SD.SuperAdminEndUser) || User.HasClaim(claim => claim.Type == SD.AdminControlClaim))
+                                    {
+                                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseAdmins" aria-expanded="false" aria-controls="pagesCollapseAdmins">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-user-shield"></i></div>
+                                            Admin
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="pagesCollapseAdmins" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                                            <nav class="sb-sidenav-menu-nested nav">
+                                                <a class="nav-link" asp-area="Admin" asp-controller="Admin" asp-action="Index">
+                                                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                                    All admins
+                                                </a>
+                                                <a class="nav-link" asp-area="Admin" asp-controller="Admin" asp-action="Register">
+                                                    <div class="sb-nav-link-icon"><i class="fas fa-user-plus"></i></div>
+                                                    New admin
+                                                </a>
+                                            </nav>
+                                        </div>
+                                    }
+                                    @if (User.IsInRole(SD.SuperAdminEndUser) || User.HasClaim(claim => claim.Type == SD.VendorControlClaim))
+                                    {
+                                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseVendors" aria-expanded="false" aria-controls="pagesCollapseVendors">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                            Vendor
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="pagesCollapseVendors" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                                            <nav class="sb-sidenav-menu-nested nav">
+                                                <a class="nav-link" asp-area="Admin" asp-controller="Vendor" asp-action="Index">
+                                                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                                    All Vendors
+                                                </a>
+                                                <a class="nav-link" asp-area="Admin" asp-controller="Vendor" asp-action="NotApprovedVendors">
+                                                    <div class="sb-nav-link-icon"><i class="fas fa-user-lock"></i></div>
+                                                    Not Approved Vendors
+                                                </a>
+                                                <a class="nav-link" asp-area="Admin" asp-controller="Vendor" asp-action="UpdateProfileRequests">
+                                                    <div class="sb-nav-link-icon"><i class="fas fa-check-circle"></i></div>
+                                                    Update Profile Requests
+                                                </a>
+                                            </nav>
+                                        </div>
+                                    }
+                                    @if (User.IsInRole(SD.SuperAdminEndUser) || User.HasClaim(claim => claim.Type == SD.MarketerControlClaim))
+                                    {
+                                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseMarketers" aria-expanded="false" aria-controls="pagesCollapseVendors">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                            Marketer
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="pagesCollapseMarketers" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                                            <nav class="sb-sidenav-menu-nested nav">
+                                                <a class="nav-link" asp-area="Admin" asp-controller="Marketer" asp-action="Index">
+                                                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                                    All Marketers
+                                                </a>
+                                            </nav>
+                                        </div>
+                                    }
+
+                                    @if (User.IsInRole(SD.SuperAdminEndUser) || User.HasClaim(claim => claim.Type == SD.CampainControlClaim))
+                                    {
+                                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseCampaigns" aria-expanded="false" aria-controls="pagesCollapseCampaigns">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-toolbox"></i></div>
+                                            Campaigns
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="pagesCollapseCampaigns" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                                            <nav class="sb-sidenav-menu-nested nav">
+                                                <a class="nav-link" asp-area="Admin" asp-controller="Campaign" asp-action="Index">
+                                                    <div class="sb-nav-link-icon"><i class="fas fa-toolbox"></i></div>
+                                                    All Campaigns
+                                                </a>
+                                                <a class="nav-link" asp-area="Admin" asp-controller="Campaign" asp-action="NotApprovedCampaigns">
+                                                    <div class="sb-nav-link-icon"><i class="fas fa-lock"></i></div>
+                                                    Not Approved Campaigns
+                                                </a>
+                                            </nav>
+                                        </div>
+                                    }
+                                    @if (User.IsInRole(SD.SuperAdminEndUser))
+                                    {
+                                        <a class="nav-link" asp-area="Admin" asp-controller="PointSettings" asp-action="Index">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-wrench"></i></div>
+                                            Points Settings
+                                        </a>
+                                    }
+                                    @if (User.IsInRole(SD.VendorEndUser))
+                                    {
+                                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseCampaigns" aria-expanded="false" aria-controls="pagesCollapseCampaigns">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-toolbox"></i></div>
+                                            Campaigns
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="pagesCollapseCampaigns" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                                            <nav class="sb-sidenav-menu-nested nav">
+                                                <a class="nav-link" asp-area="Vendor" asp-controller="Campaign" asp-action="Index">
+                                                    <div class="sb-nav-link-icon"><i class="fas fa-puzzle-piece"></i></div>
+                                                    Your Campaigns
+                                                </a>
+                                                <a class="nav-link" asp-area="Vendor" asp-controller="Campaign" asp-action="Create">
+                                                    <div class="sb-nav-link-icon"><i class="fas fa-plus-circle"></i></div>
+                                                    Add new campaign
+                                                </a>
+                                            </nav>
+                                        </div>
+                                        <a class="nav-link" asp-area="Vendor" asp-controller="VendorCheckout" asp-action="Index">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-plus-circle"></i></div>
+                                            Add Points
+                                        </a>
+                                    }
+                                    @if (User.IsInRole(SD.MarketerEndUser))
+                                    {
+                                        <a class="nav-link" asp-area="Marketer" asp-controller="MarketerCampaign" asp-action="Index">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                            Subscribed Campaigns
+                                        </a>
+                                    }
+                                </nav>
+                            </div>
+
+                            @if (User.IsInRole(SD.SuperAdminEndUser))
+                            {
+                                <div class="sb-sidenav-menu-heading">Edit Static Pages</div>
+                                <a class="nav-link" asp-area="admin" asp-controller="StaticPages" asp-action="EditAboutUs">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
+                                    About Us
+                                </a>
+                                <a class="nav-link" asp-area="admin" asp-controller="StaticPages" asp-action="EditHowItWorks">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
+                                    How It Works
+                                </a>
+                                <a class="nav-link" asp-area="admin" asp-controller="StaticPages" asp-action="EditPrivacy">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
+                                    Privacy Policy
+                                </a>
+
+                                <div class="sb-sidenav-menu-heading">More</div>
+                                <a class="nav-link" asp-area="admin" asp-controller="Message" asp-action="SendMessage">
+                                    <div class="sb-nav-link-icon"><i class="far fa-comment-dots"></i></div>
+                                    Send Message
+                                </a>
+                            }
+                            @if (User.IsInRole(SD.VendorEndUser))
+                            {
+                                <div class="sb-sidenav-menu-heading">More</div>
+                                <a class="nav-link" asp-area="admin" asp-controller="Vendor" asp-action="DetailsForVendor">
+                                    <div class="sb-nav-link-icon"><i class="far fa-address-card"></i></div>
+                                    Your Profile
+                                </a>
+                            }
+                            @if (User.IsInRole(SD.MarketerEndUser))
+                            {
+                                <div class="sb-sidenav-menu-heading">More</div>
+                                <a class="nav-link" asp-area="admin" asp-controller="Marketer" asp-action="DetailsForMarketer">
+                                    <div class="sb-nav-link-icon"><i class="far fa-address-card"></i></div>
+                                    Your Profile
+                                </a>
+                            }
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                        @User.Identity.Name
+                    </div>
+                </nav>
+            </div>
+        }
+        <div id="layoutSidenav_content">
+            <div class="container">
+
+                <main role="main" class="pb-3">
+                    <br />
+                    @* Alert *@
+                    @if (TempData["state"] != null)
+                    {
+                        @if ((int)TempData["state"] == 0)
+                        {
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                @TempData["Message"]
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        }
+                        else if ((int)TempData["state"] == 1)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                @TempData["Message"]
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        }
+                        else if ((int)TempData["state"] == 2)
+                        {
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                @TempData["Message"]
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        }
+                    }
+
+                    @RenderBody()
+                </main>
+
+            </div>
+
+
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        &copy; 2020 - Store - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    @*</header>*@
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Register</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    You want to register as
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a type="button" class="btn btn-primary" asp-area="Customer" asp-controller="Account" asp-action="VendorRegister">Vendor</a>
+                    <a type="button" class="btn btn-primary" asp-area="Customer" asp-controller="Account" asp-action="MarketerRegister">Marketer</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/scripts.js"></script>     @*for layout and sideBar*@
+    @*<script type="text/javascript" src="~/js/mdb.min.js"></script>*@
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <script src="~/js/notiflix-2.1.2.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/jquery-ui.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.timepicker.js" asp-append-version="true"></script>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote.min.js"></script>       @* for textArea *@
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+
+
+
+        var connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
+        var x = document.getElementById("toast");
+        connection.on("ReceiveMessage", function (status, message) {
+
+            if (status == 1) {
+                Notiflix.Notify.Success(message);
+            } else if (status == 2) {
+                Notiflix.Notify.Info(message);
+            } else if (status == 3) {
+                Notiflix.Notify.Warning(message);
+            } else if (status == 0) {
+                Notiflix.Notify.Failure(message);
+            }
+
+        });
+
+        connection.start().then(function () {
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+
+        var element = document.getElementById('messagesId');
+        var messagesCountElem = document.getElementById('messagesCount');
+        var unreadMessagesCounter = 0;
+
+        function getMessages() {
+            console.log("counter is "+messagesCounter);
+            if (element != null && element != 'undefined') {
+                $.get('https://localhost:44356/Customer/Home/GetMessages/', { conter: messagesCounter },
+                    function (returnedData) {
+                        for (var i = 0; i < returnedData.length; i++) {
+                            if (returnedData[i].read) {
+                                var msg = `<a class="dropdown-item d-flex align-items-center" href="/Customer/Home/GetMessage/` + returnedData[i].id + `">
+                                                <div>
+                                                    <div class="text-truncate">` + returnedData[i].text + `.</div>
+                                                    <div class="small text-gray-500">Admin · 58m</div>
+                                                </div>
+                                            </a>`
+
+                            } else {
+                                var msg = `<a class="dropdown-item d-flex align-items-center" href="/Customer/Home/GetMessage/` + returnedData[i].id + `">
+                                                <div class="font-weight-bold">
+                                                    <div class="text-truncate">` + returnedData[i].text + `.</div>
+                                                    <div class="small text-gray-500">Admin · 58m</div>
+                                                </div>
+                                            </a>`
+                                unreadMessagesCounter++;
+                            }
+                            element.innerHTML += msg;
+
+                        };
+                        messagesCounter++;
+                        if (unreadMessagesCounter == 0) {
+                            messagesCountElem.hidden = true;
+                        } else {
+                            messagesCountElem.innerHTML = unreadMessagesCounter;
+                        }
+                    });
+            }
+        }
+
+
+
+
+        var messagesCounter = 0;
+        getMessages();
+
+       
+
+
+    </script>
+</body>
+</html>

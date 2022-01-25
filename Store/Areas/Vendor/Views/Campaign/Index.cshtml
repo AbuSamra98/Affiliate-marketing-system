@@ -1,0 +1,291 @@
+﻿@model IEnumerable<Store.Base.Models.Campaign>
+
+@{
+    ViewData["Title"] = "Campaigns";
+}
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">Campaigns List</h2>
+    </div>
+    <div class="col-6 text-right">
+        <a asp-action="Create" class="btn btn-info"><i class="fas fa-plus"></i>&nbsp; New Campaign</a>
+    </div>
+</div>
+
+<br />
+<br />
+<table id="table_id" class="display">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Title)</th>
+            <th>@Html.DisplayNameFor(model => model.Points)</th>
+            <th>@Html.DisplayNameFor(model => model.ExpireDate)</th>
+            <th>@Html.DisplayNameFor(model => model.IsApproved)</th>
+            <th>@Html.DisplayNameFor(model => model.Enable)</th>
+
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Points) &nbsp;
+                        <a class="btn btn-primary float-right" data-toggle="modal" data-target="#pointsModal" data-id="@item.Id" data-points="@item.Points">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </td>
+                    <td>
+                        @if (item.ExpireDate < new DateTime(year: 2000, month: 1, day: 1))
+                        {
+                            @if (item.IsApproved)
+                            {
+                                <a class="btn btn-primary" data-toggle="modal" data-target="#expireDateModal" data-id="@item.Id" data-points=@DateTime.Now>
+                                    <i class="fas fa-edit"></i>&nbsp; Add Date
+                                </a>
+                            }
+                            else
+                            {
+                                <div>Not approved yet</div>
+                            }
+                        }
+                        else
+                        {
+                            if (item.ExpireDate < DateTime.Now)
+                            {
+                                <span class="text-danger">@Html.DisplayFor(modelItem => item.ExpireDate)</span>
+                                
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.ExpireDate)
+                            }
+                            <a class="btn btn-primary float-right" data-toggle="modal" data-target="#expireDateModal" data-id="@item.Id" data-points="@item.ExpireDate">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        }
+                    </td>
+                    <td>
+                        @if (item.IsApproved)
+                        {
+                            <span><i class="far fa-check-circle"></i> Approved</span>
+                        }
+                        else
+                        {
+                            <span><i class="fas fa-exclamation-triangle"></i></span><span>not Approved</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.Enable)
+                        {
+                            <a class="btn btn-success text-white" onclick="Lock(@item.Id, this)">
+                                <i class="fas fa-lock-open"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-danger text-white" onclick="Lock(@item.Id, this)">
+                                <i class="fas fa-lock"></i>
+                            </a>
+                        }
+                    </td>
+                    <td>
+                        <a type="button" class="btn btn-success" asp-action="Details" asp-route-id="@item.Id">
+                            <i class="far fa-list-alt"></i>
+                        </a>
+                        <a type="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+
+
+
+
+@*modal for add points*@
+<div class="modal fade" id="pointsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Points to campaign</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label id="pointsLabel" for="recipient-name" class="col-form-label">Add to the current points:</label>
+                        <input type="text" class="form-control" id="pointsInput">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a id="addPointsButton" asp-action="AddPoints" type="button" class="btn btn-primary">Add Points</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*modal for add expireDate*@
+<div class="modal fade" id="expireDateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit expire date of campaign</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">expire date</label>
+                        <input type="text" autocomplete="off" class="form-control datepicker" id="expireDateInput">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Time</label>
+                        <input type="time" class="form-control timepicker" id="expireTimeInput">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a id="editExpireDateButton" asp-action="EditExpireDate" type="button" class="btn btn-primary">Edit Expire Date</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*<script src="~/js/signalr/dist/browser/signalr.js"></script>*@
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+
+        $('#pointsModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id') // Extract info from data-* attributes
+            var points = button.data('points') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var pointsInput = $("#pointsInput");
+            var addButton = $("#addPointsButton")
+
+            addButton.attr('href', addButton.attr("href") + "/" + id);
+
+
+            $("#addPointsButton").click(function () {
+                addButton.attr('href', addButton.attr("href") + "?points=" + pointsInput.val());
+            });
+
+            var modal = $(this)
+            modal.find('#pointsLabel').text('Add to the current points (' + points + ')')
+
+        })
+
+
+
+        $('#expireDateModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id') // Extract info from data-* attributes
+            var expireDate = button.data('expireDate') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var expireDateInput = $("#expireDateInput");
+            var editExpireDateButton = $("#editExpireDateButton")
+            var expireTimeInput = $("#expireTimeInput")
+
+            expireDateInput.val(expireDate);
+
+            editExpireDateButton.attr('href', editExpireDateButton.attr("href") + "/" + id);
+
+
+            $("#editExpireDateButton").click(function () {
+                editExpireDateButton.attr('href', editExpireDateButton.attr("href") + "?expireDate=" + expireDateInput.val());
+                editExpireDateButton.attr('href', editExpireDateButton.attr("href") + "&expireTime=" + expireTimeInput.val());
+            });
+
+            //var modal = $(this)
+
+
+
+
+            //for date and time --------------------
+            $(function () {
+                $(".datepicker").datepicker({
+                    minDate: +1,
+                    //maxDate: "+3M",     //min data is tomorrow(+1) and max date is 3 months("+3M") after min date(tomorrow)
+                    dateFormat: 'mm-dd-yy'
+                });
+            });
+
+
+            $(document).ready(function () {
+                var appointmentTime = document.getElementsByClassName('datepicker').value;
+                var splitData = "";
+                if (appointmentTime.indexOf(" ") > 0) {
+                    splitData = appointmentTime.split(" ");
+                }
+                else {
+                    splitData = appointmentTime.split("T");         //the space in some browsers may be ('T')
+                }
+                var time = splitData[1].substring(0, 5);
+                if (time.slice(-1) == ":") {
+                    time = time.substring(0, time.length - 1);
+                }
+                var amPmTime = splitData[2];
+                $('.datepicker').attr('value', splitData[0]);
+                $('.timepicker').attr('value', time + ' ' + amPmTime);
+            });
+
+
+
+        })
+
+
+        function Lock(id, element) {
+
+            $.post('https://localhost:44356/Vendor/Campaign/Lock/', { id: id },
+                function (returnedData) {
+                    if (returnedData == 1) {
+                        $(element).toggleClass("btn-success");
+                        $(element).toggleClass("btn-danger");
+                        $(element).html(`<i class="fas fa-lock"></i>`);
+                    } else {
+                        $(element).toggleClass("btn-success");
+                        $(element).toggleClass("btn-danger");
+                        $(element).html(`<i class="fas fa-lock-open"></i>`);
+                    }
+                });
+        }
+
+
+    </script>
+}
+

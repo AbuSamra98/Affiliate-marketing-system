@@ -1,0 +1,150 @@
+﻿@model Store.Base.Models.ViewModels.CampaignViewModel
+@using Store.Base.Extensions      @*for select list*@
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<br />
+<h2 class="text-info">Edit Campaign</h2>
+
+<form method="post" enctype="multipart/form-data">
+    @*(enctype="multipart/form-data") to upload image in form*@
+    <div class="p-4 border rounded row">
+        <input hidden asp-for="Campaign.Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-8">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Campaign.Title"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Campaign.Title" class="form-control" />
+                </div>
+                <span asp-validation-for="Campaign.Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Campaign.Desc"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Campaign.Desc" class="form-control" />
+                </div>
+                <span asp-validation-for="Campaign.Desc" class="text-danger"></span>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Campaign.Image"></label>
+                </div>
+                <div class="col-8">
+                    <input type="file" name="file" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="CampaignTypes"></label>
+                </div>
+                <div class="col-8">
+                    <select asp-for="@Model.Campaign.CampaignTypeId" asp-items="Model.CampaignTypes.ToSelectListItem(Model.Campaign.CampaignTypeId)" class="form-control"></select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Campaign.Points"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Campaign.Points" class="form-control" />
+                </div>
+                <span asp-validation-for="Campaign.Points" class="text-danger"></span>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Campaign.ExpireDate"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Campaign.ExpireDate" autocomplete="off" type="text" id="datepicker" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Campaign.ExpireTime"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Campaign.ExpireTime" autocomplete="off" type="text" class="timepicker form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-1"></div>
+
+        <div class="col-3">
+            @if (@Model.Campaign.Image != null)
+            {
+                <img src="@Model.Campaign.Image" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+            }
+            else
+            {
+                <img src="\images\CampaignImage\default_image.png" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+            }
+        </div>
+
+        <br />
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Update" />
+            <a asp-action="Index" class="btn btn-success">Back to List</a>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(function () {
+            $("#datepicker").datepicker({
+                minDate: +1,
+                //maxDate: "+3M",     //min data is tomorrow(+1) and max date is 3 months("+3M") after min date(tomorrow)
+                dateFormat: 'mm-dd-yy'
+            });
+        });
+
+        $('.timepicker').timepicker({
+            timeFormat: 'h:mm p',
+            interval: 60,
+            minTime: '10',
+            maxTime: '6:00pm',
+            startTime: '10:00',
+            dynamic: true,
+            dropdown: true,
+            scrollbar: true
+        });
+
+        $(document).ready(function () {
+            var appointmentTime = document.getElementById('datepicker').value;
+            var splitData = "";
+            if (appointmentTime.indexOf(" ") > 0) {
+                splitData = appointmentTime.split(" ");
+            }
+            else {
+                splitData = appointmentTime.split("T");         //the space in some browsers may be ('T')
+            }
+            var time = splitData[1].substring(0, 5);
+            if (time.slice(-1) == ":") {
+                time = time.substring(0, time.length - 1);
+            }
+            var amPmTime = splitData[2];
+            $('#datepicker').attr('value', splitData[0]);
+            $('.timepicker').attr('value', time + ' ' + amPmTime);
+        });
+
+        notification();
+
+
+    </script>
+}

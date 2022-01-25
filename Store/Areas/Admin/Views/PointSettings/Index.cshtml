@@ -1,0 +1,27 @@
+﻿@model Store.Base.Models.PointSettings
+
+@{
+    ViewData["Title"] = "Point Settings";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PointValue"></label><span>&nbsp; <i class="fas fa-dollar-sign"></i></span>
+                <input asp-for="PointValue" class="form-control" />
+                <span asp-validation-for="PointValue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PercentageForAdmin"></label><span>&nbsp; <i class="fas fa-percentage"></i></span>
+                <input asp-for="PercentageForAdmin" class="form-control" />
+                <span asp-validation-for="PercentageForAdmin" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+</div>

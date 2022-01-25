@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Store.Base.Models.UpdateVendorProfileRequest>
+
+@{
+    ViewData["Title"] = "Update Profile Requests";
+}
+
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">Update Profile Requests for Vendors</h2>
+    </div>
+</div>
+
+<br />
+<br />
+<table id="table_id" class="display">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.User.UserName)</th>
+            <th>@Html.DisplayNameFor(model => model.User.FullName)</th>
+            <th>@Html.DisplayNameFor(model => model.User.PhoneNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.OrganizationAndCompany)</th>
+            <th>@Html.DisplayNameFor(model => model.WebsiteURL)</th>
+            <th>@Html.DisplayNameFor(model => model.country)</th>
+            <th>@Html.DisplayNameFor(model => model.City)</th>
+            <th>@Html.DisplayNameFor(model => model.Address)</th>
+            <th>@Html.DisplayNameFor(model => model.ZIP)</th>
+            <th>Approval</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <th>@Html.DisplayFor(modelItem => item.User.UserName)</th>
+                    <th>@Html.DisplayFor(modelItem => item.FullName)</th>
+                    <th>@Html.DisplayFor(modelItem => item.PhoneNumber)</th>
+                    <th>@Html.DisplayFor(modelItem => item.OrganizationAndCompany)</th>
+                    <th>@Html.DisplayFor(modelItem => item.WebsiteURL)</th>
+                    <th>@Html.DisplayFor(modelItem => item.country.Name)</th>
+                    <th>@Html.DisplayFor(modelItem => item.City)</th>
+                    <th>@Html.DisplayFor(modelItem => item.Address)</th>
+                    <th>@Html.DisplayFor(modelItem => item.ZIP)</th>
+                    <td>
+                        <a class="btn btn-success text-white" asp-area="Admin" asp-controller="Vendor" asp-action="ApproveUpdateProfileRequests" asp-route-id="@item.Id">
+                            <i class="fas fa-check-circle"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+
+    </script>
+}

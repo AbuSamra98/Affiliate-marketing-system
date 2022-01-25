@@ -1,0 +1,169 @@
+﻿@model Store.Base.Models.ViewModels.CampaignViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<br />
+<h2 class="text-info">Campaign Details</h2>
+
+<div class="p-4 border rounded row">
+    <div class="col-8">
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Campaign.Title"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Campaign.Title" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Campaign.Summary"></label>
+            </div>
+            <div class="col-8">
+                <textarea asp-for="Campaign.Summary" class="form-control" readonly></textarea>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Campaign.Desc"></label>
+            </div>
+            <div class="col-8">
+                <textarea asp-for="Campaign.Desc" class="form-control" readonly rows="4"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="CampaignTypes"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Campaign.CampaignTypes.Name" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Campaign.Points"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Campaign.Points" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Campaign.ExpireDate"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Campaign.ExpireDate" readonly type="text" id="date" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Campaign.ExpireTime"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Campaign.ExpireTime" readonly autocomplete="off" type="text" class="timepicker form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Campaign.URL"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Campaign.URL" class="form-control" readonly />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-1"></div>
+
+    <div class="col-3">
+        <div>
+            @if (@Model.Campaign.Image != null)
+            {
+                <img src="@Model.Campaign.Image" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+            }
+            else
+            {
+                <img src="\images\CampaignImage\default_image.png" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+            }
+        </div>
+
+        <br />
+        <div>
+            @if (@Model.Campaign.IsApproved)
+            {
+                <span><i class="far fa-check-circle"></i> The Campaign Approved</span>
+            }
+            else
+            {
+                <span><i class="fas fa-exclamation-triangle">The Campaign not Approved</i></span>
+            }
+        </div>
+
+        <br />
+        <span>Number of Subscribers:&nbsp; @Model.SubscribersCount</span>
+
+    </div>
+
+
+        <br />
+        <div class="form-group">
+            @*<a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.Campaign.Id">Edit</a>*@
+            <a asp-action="Index" class="btn btn-success">Back to List</a>
+        </div>
+    </div>
+
+
+
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(function () {
+            $("#datepicker").datepicker({
+                minDate: +1,
+                //maxDate: "+3M",     //min data is tomorrow(+1) and max date is 3 months("+3M") after min date(tomorrow)
+                dateFormat: 'mm-dd-yy'
+            });
+        });
+
+
+        $(document).ready(function () {
+            var appointmentTime = document.getElementById('date').value;
+            var splitData = "";
+            if (appointmentTime.indexOf(" ") > 0) {
+                splitData = appointmentTime.split(" ");
+            }
+            else {
+                splitData = appointmentTime.split("T");         //the space in some browsers may be ('T')
+            }
+            var time = splitData[1].substring(0, 5);
+            if (time.slice(-1) == ":") {
+                time = time.substring(0, time.length - 1);
+            }
+            if (splitData[0] != '1/1/0001') {
+                var amPmTime = splitData[2];
+                $('#date').attr('value', splitData[0]);
+                $('.timepicker').attr('value', time + ' ' + amPmTime);
+            } else {
+                $('#date').attr('value', '');
+                $('.timepicker').attr('value', '');
+            }
+
+        });
+
+
+        notification();
+
+
+    </script>
+}
