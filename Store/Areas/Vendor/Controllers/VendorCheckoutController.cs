@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Store.Base.Models;
+using Store.Base.Utility;
 using Store.DataAccess.Data;
 using Store.DataAccess.Repository.Interfaces;
 

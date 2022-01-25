@@ -42,12 +42,12 @@
         <a class="nav-link text-white" asp-area="Customer" asp-controller="Home" asp-action="Privacy">Privacy policy</a>
 
         <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
-            <div class="input-group">
+            @*<div class="input-group">
                 <input class="form-control" type="text" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
                 <div class="input-group-append">
                     <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
                 </div>
-            </div>
+            </div>*@
         </form>
         <!-- Navbar-->
         @if (SignInManager.IsSignedIn(User))
@@ -87,7 +87,7 @@
                             <div id="messagesId" style="max-height:300px; overflow:auto">
 
                             </div>
-                            <a class="dropdown-item text-center small text-gray-500" onclick="getMessages()" href="#">Read More Messages</a>
+                            <a id="getMessagesElem" class="dropdown-item text-center small text-gray-500"  href="#">Read More Messages</a>
                         </div>
 
                     </li>
@@ -437,11 +437,24 @@
         var messagesCountElem = document.getElementById('messagesCount');
         var unreadMessagesCounter = 0;
 
+        $('#getMessagesElem').on('click', function (event) {
+            // The event won't be propagated up to the document NODE and 
+            // therefore delegated events won't be fired
+            event.stopPropagation();
+            getMessages()
+        });
+
         function getMessages() {
+
             console.log("counter is "+messagesCounter);
             if (element != null && element != 'undefined') {
                 $.get('https://localhost:44356/Customer/Home/GetMessages/', { conter: messagesCounter },
                     function (returnedData) {
+                        if (returnedData.length < 5) {
+                            $('#getMessagesElem').hide()
+                        }
+                        
+
                         for (var i = 0; i < returnedData.length; i++) {
                             if (returnedData[i].read) {
                                 var msg = `<a class="dropdown-item d-flex align-items-center" href="/Customer/Home/GetMessage/` + returnedData[i].id + `">
