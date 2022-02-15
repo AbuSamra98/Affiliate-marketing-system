@@ -67,8 +67,8 @@ namespace Store.Controllers
                 var result = await _userManager.CreateAsync(user, VendorRegisterVM.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user,SD.VendorEndUser);
-                    var vendor = new Vendor() { User = user, OrganizationAndCompany = VendorRegisterVM.OrganizationAndCompany, WebsiteURL =VendorRegisterVM.WebsiteURL, Address = VendorRegisterVM.Address, City = VendorRegisterVM.City, CountryId = VendorRegisterVM.CountryId, ZIP = VendorRegisterVM.ZIP };
+                    await _userManager.AddToRoleAsync(user, SD.VendorEndUser);
+                    var vendor = new Vendor() { User = user, OrganizationAndCompany = VendorRegisterVM.OrganizationAndCompany, WebsiteURL = VendorRegisterVM.WebsiteURL, Address = VendorRegisterVM.Address, City = VendorRegisterVM.City, CountryId = VendorRegisterVM.CountryId, ZIP = VendorRegisterVM.ZIP };
                     _db.Vendors.Add(vendor);
 
                     await _db.SaveChangesAsync();
@@ -107,7 +107,7 @@ namespace Store.Controllers
                 }
 
 
-                var user = new ApplicationUser { Email = MarketerRegisterVM.Email, UserName = MarketerRegisterVM.Username, FullName = MarketerRegisterVM.FullName};
+                var user = new ApplicationUser { Email = MarketerRegisterVM.Email, UserName = MarketerRegisterVM.Username, FullName = MarketerRegisterVM.FullName };
                 var result = await _userManager.CreateAsync(user, MarketerRegisterVM.Password);
                 if (result.Succeeded)
                 {
@@ -132,6 +132,7 @@ namespace Store.Controllers
 
         public IActionResult Login()
         {
+
             return View();
         }
 
@@ -139,6 +140,7 @@ namespace Store.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel LoginUser)
         {
+
             //if the entered value of the username is an email >> pass the username value
             var user = await _userManager.FindByEmailAsync(LoginUser.Username);
             if (user != null)
@@ -146,7 +148,7 @@ namespace Store.Controllers
                 LoginUser.Username = user.UserName;
             }
             var result = await _signInManager.PasswordSignInAsync(LoginUser.Username, LoginUser.Password, true, false);
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -172,7 +174,6 @@ namespace Store.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

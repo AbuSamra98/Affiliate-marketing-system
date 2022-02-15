@@ -4,7 +4,7 @@
     ViewData["Title"] = "Campaign Details";
 }
 
-<h1>CampaignDetails</h1>
+<h1>Campaign Details</h1>
 
 <div class="p-4 border rounded row">
     <div class="col-8">
@@ -70,32 +70,36 @@
 <br />
 <br />
 <br />
-<h2>Related Campaigns</h2>
+
+@if (Model.RelatedCampaigns.Any())
+{
+    <h2 id="relatedCampaignHeader" style="display:none;">Related Campaigns</h2>
+}
 
 <div id="parentElem" class="row">
 
-    @*@foreach (var item in Model.RelatedCampaigns)
-        {
-            <div class="card col-lg-3 col-md-5 col-sm-12" style="margin-top: 40px">
-                <img class="card-img-top" width="100%" src=@item.Image alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">@item.Title</h5>
-                    <p class="card-text">@item.Summary</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Remaining points: @item.Points</li>
-                    <li class="list-group-item">Expire Date: @item.ExpireDate</li>
-                    <li class="list-group-item">Number of subscribers: @item.SubscribersCount</li>
-                </ul>
-                <div class="card-body">
-                    <a onclick="Subscribe(@item.Id, this, `@item.Title`)" type="button" style="color:white" class="btn btn-primary addToCart">Subscribe</a>
-                    <a asp-action="CampaignDetails" asp-route-CampaignId="@item.Id" type="button" class="btn btn-primary">more</a>
-                </div>
+    @foreach (var item in Model.RelatedCampaigns)
+    {
+        <div class="card col-lg-3 col-md-5 col-sm-12" style="margin-top: 40px">
+            <img class="card-img-top" width="100%" src=@item.Image alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">@item.Title</h5>
+                <p class="card-text">@item.Summary</p>
             </div>
-            <div class="col-lg-1 col-md-1 col-sm-0">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Remaining points: @item.Points</li>
+                <li class="list-group-item">Expire Date: @item.ExpireDate</li>
+                <li class="list-group-item">Number of subscribers: @item.SubscribersCount</li>
+            </ul>
+            <div class="card-body">
+                <a onclick="Subscribe(@item.Id, this, `@item.Title`)" type="button" style="color:white" class="btn btn-primary addToCart">Subscribe</a>
+                <a asp-action="CampaignDetails" asp-route-CampaignId="@item.Id" type="button" class="btn btn-primary">more</a>
             </div>
+        </div>
+        <div class="col-lg-1 col-md-1 col-sm-0">
+        </div>
 
-        }*@
+    }
 </div>
 
 
@@ -104,14 +108,26 @@
     <script>
         var parentElem = document.getElementById("parentElem");
 
-        var counter = 0;
+        @*var counter = 0;
         console.log("@Model.Owner");
         $(window).scroll(function() {
             if($(window).scrollTop() == $(document).height() - $(window).height()) {
-                   // ajax call get data from server and append to the div
 
-                $.get('https://localhost:44356/Customer/Home/GetRelatedCampaigns/', { userName: "@Model.Owner", counter: counter },
+                GetRelatedVideos()
+
+            }
+        });
+
+        $(document).ready(function () {
+            GetRelatedVideos()
+        });
+
+        function GetRelatedVideos() {
+            // ajax call get data from server and append to the div
+            $.get('https://localhost:44356/Customer/Home/GetRelatedCampaigns/', { userName: "@Model.Owner", counter: counter },
                 function (returnedData) {
+                    if (returnedData.length>0)
+                        $('#relatedCampaignHeader').show()
                     for (var i = 0; i < returnedData.length; i++) {
                         var camCard = `<div class="card col-lg-3 col-md-5 col-sm-12" style="margin-top: 40px">
                                             <img class="card-img-top" width="100%" src=`+ returnedData[i].image +` alt="Card image cap">
@@ -136,11 +152,9 @@
 
                     counter++;
 
-                });
-
-            }
-        });
-
+                }
+            );
+        }*@
 
 
         function Subscribe(campaignId, element, campaignTitle) {
@@ -158,14 +172,16 @@
                     }
                 })
                 .fail(function (returnedData) {
-                    //console.log(returnedData);
-                    Notiflix.Confirm.Show('You should login as a marketer', 'Do you have a marketer account?', 'Yes', 'No',
-                        function () { // Yes button
-                            window.location.href = 'https://localhost:44356/Customer/Account/Login';
-                        }, function () { // No button
-                            window.location.href = 'https://localhost:44356/Customer/Account/MarketerRegister';
-                        });
-                    //Notiflix.Notify.Warning("You should login as a marketer to subscibe the campaign");
+                    if (returnedData.status == 401 || returnedData.status == 403) {
+                        Notiflix.Confirm.Show('You should login as a marketer', 'Do you want to login?', 'Yes', 'No',
+                            function () { // Yes button
+                                //window.location.href = 'https://localhost:44356/Customer/Account/Login';
+                                $('#submitLogoutButton').click()
+                            }, function () { // No button
+                                //window.location.href = 'https://localhost:44356/Customer/Account/MarketerRegister';
+                            });
+                    }
+
                 });
         }
 

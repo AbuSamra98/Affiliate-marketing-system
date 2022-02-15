@@ -1,6 +1,9 @@
 ﻿@using Store.Base.Utility
 @using Microsoft.AspNetCore.Identity
+
 @inject SignInManager<ApplicationUser> SignInManager
+@inject Store.DataAccess.Data.ApplicationDbContext Context
+
 
 
 
@@ -43,18 +46,23 @@
 
         <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
             @*<div class="input-group">
-                <input class="form-control" type="text" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
-                <div class="input-group-append">
-                    <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
-                </div>
-            </div>*@
+                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>*@
         </form>
         <!-- Navbar-->
         @if (SignInManager.IsSignedIn(User))
         {
+            @if (User.IsInRole(SD.MarketerEndUser))
+            {
+                var salary = Context.Marketers.Where(x => x.User.UserName == User.Identity.Name).Select(x => x.Salary);
+                <b style="color: limegreen; font-size: larger;">@salary.FirstOrDefault() $</b>
+            }
             @if (User.IsInRole(SD.VendorEndUser) || User.IsInRole(SD.MarketerEndUser))
             {
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto ml-md-5">
                     <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                     <li class="nav-item dropdown no-arrow d-sm-none">
                         <!-- Dropdown - Messages -->
@@ -87,7 +95,7 @@
                             <div id="messagesId" style="max-height:300px; overflow:auto">
 
                             </div>
-                            <a id="getMessagesElem" class="dropdown-item text-center small text-gray-500"  href="#">Read More Messages</a>
+                            <a id="getMessagesElem" class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
                         </div>
 
                     </li>
@@ -101,7 +109,7 @@
                         <a class="dropdown-item" asp-area="Customer" asp-controller="ManageAccount" asp-action="ChangePassword">Settings</a>@*<a class="dropdown-item" href="#">Activity Log</a>*@
                         <div class="dropdown-divider"></div>
                         <form class="dropdown-item" asp-area="Customer" asp-controller="Account" asp-action="Logout" )">
-                            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                            <button id="submitLogoutButton" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
                         </form>
                         @*<a class="dropdown-item" asp-area="Customer" asp-controller="Account" asp-action="Logout">Logout</a>*@
                     </div>
@@ -356,7 +364,7 @@
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid">
                     <div class="d-flex align-items-center justify-content-between small">
-                        &copy; 2020 - Store - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        &copy; 2022 - Affiliate Marketing - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </div>
                 </div>
             </footer>
@@ -438,7 +446,7 @@
         var unreadMessagesCounter = 0;
 
         $('#getMessagesElem').on('click', function (event) {
-            // The event won't be propagated up to the document NODE and 
+            // The event won't be propagated up to the document NODE and
             // therefore delegated events won't be fired
             event.stopPropagation();
             getMessages()
@@ -446,31 +454,31 @@
 
         function getMessages() {
 
-            console.log("counter is "+messagesCounter);
+            console.log("counter is " + messagesCounter);
             if (element != null && element != 'undefined') {
                 $.get('https://localhost:44356/Customer/Home/GetMessages/', { conter: messagesCounter },
                     function (returnedData) {
                         if (returnedData.length < 5) {
                             $('#getMessagesElem').hide()
                         }
-                        
+
 
                         for (var i = 0; i < returnedData.length; i++) {
                             if (returnedData[i].read) {
                                 var msg = `<a class="dropdown-item d-flex align-items-center" href="/Customer/Home/GetMessage/` + returnedData[i].id + `">
-                                                <div>
-                                                    <div class="text-truncate">` + returnedData[i].text + `.</div>
-                                                    <div class="small text-gray-500">Admin · 58m</div>
-                                                </div>
-                                            </a>`
+                                                                        <div>
+                                                                            <div class="text-truncate">` + returnedData[i].text + `.</div>
+                                                                            <div class="small text-gray-500">Admin · 58m</div>
+                                                                        </div>
+                                                                    </a>`
 
                             } else {
                                 var msg = `<a class="dropdown-item d-flex align-items-center" href="/Customer/Home/GetMessage/` + returnedData[i].id + `">
-                                                <div class="font-weight-bold">
-                                                    <div class="text-truncate">` + returnedData[i].text + `.</div>
-                                                    <div class="small text-gray-500">Admin · 58m</div>
-                                                </div>
-                                            </a>`
+                                                                        <div class="font-weight-bold">
+                                                                            <div class="text-truncate">` + returnedData[i].text + `.</div>
+                                                                            <div class="small text-gray-500">Admin · 58m</div>
+                                                                        </div>
+                                                                    </a>`
                                 unreadMessagesCounter++;
                             }
                             element.innerHTML += msg;
@@ -492,7 +500,7 @@
         var messagesCounter = 0;
         getMessages();
 
-       
+
 
 
     </script>

@@ -51,6 +51,7 @@ namespace Store.Base.Models
         [Url]
         public string Other { get; set; }
 
+        [Display(Name = "Salary (USD)")]
         public float Salary { get; set; }
 
     }

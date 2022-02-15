@@ -37,7 +37,7 @@ namespace Store.Areas.Admin.Controllers
 
             var s = claim.Value;
 
-            //get role id for admin role
+            //get role id for admin role//
             var roleId = _roleManager.Roles.Where(x => x.Name == SD.AdminEndUser).FirstOrDefault().Id;
 
             //get all admin Ids

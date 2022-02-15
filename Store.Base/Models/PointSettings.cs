@@ -14,7 +14,7 @@ namespace Store.Base.Models
         public float PointValue { get; set; }
 
         [Required]
-        [Display(Name = "Percentage For Admin")]
+        [Display(Name = "Profit Ratio For the system")]
         public float PercentageForAdmin { get; set; }
 
     }

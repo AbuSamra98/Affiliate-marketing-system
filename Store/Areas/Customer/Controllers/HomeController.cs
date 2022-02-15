@@ -82,10 +82,11 @@ namespace Store.Controllers
             }
             var OwnerName = campaign.Vendor.User.UserName;
             campaign.Vendor = null;
+            var RelatedCampaigns = await _campaignRepository.GetCampaigns(campaign.VendorId);
             var campaignDetails = new CampaignDetailsViewModel()
             {
                 Campaign = campaign,
-                RelatedCampaigns = await _campaignRepository.GetCampaigns(campaign.VendorId),
+                RelatedCampaigns = RelatedCampaigns.Where(x => x.Id != campaign.Id).ToList(),
                 Owner = OwnerName
             };
 

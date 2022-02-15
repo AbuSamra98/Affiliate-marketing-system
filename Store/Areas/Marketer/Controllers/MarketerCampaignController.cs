@@ -211,7 +211,7 @@ namespace Store.Areas.Marketer.Controllers
             //var remoteIpAddress = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
 
             //check if this click exist with the same day and the same ip address
-            if (!(_db.Clicks.Where(x => x.LinkId == linkId && x.Date.Date == DateTime.Now.Date && x.IPAddress == ip).Any()))
+            if (!(_db.Clicks.Where(x => x.LinkId == linkId && x.IPAddress == ip && DateTime.Now > x.Date && DateTime.Now.AddDays(1) < x.Date ).Any()))
             {
                 var click = new Click()
                 {
@@ -232,10 +232,14 @@ namespace Store.Areas.Marketer.Controllers
                     return NotFound();
                 }
 
-                if(campaign.Points > 0)
+                var PointsSettings = await _db.PointSettings.FirstAsync();
+                var transferedMoney = PointsSettings.PointValue * ((100 - PointsSettings.PercentageForAdmin) / 100);
+
+                if (campaign.Points > 0)
                 {
                     campaign.Points -= 1;
                     marketer.Points += 1;
+                    marketer.Salary += transferedMoney;
                 }
                 _db.Clicks.Add(click);
 
