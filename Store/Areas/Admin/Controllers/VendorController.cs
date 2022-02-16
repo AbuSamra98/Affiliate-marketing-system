@@ -160,7 +160,7 @@ namespace Store.Areas.Admin.Controllers
             await _hub.Clients.User(vendor.VendorId).SendAsync("ReceiveMessage", 1, "Your update profile request is approved");
 
             TempData["state"] = 1;
-            TempData["Message"] = "Approved update profile request for vendor " + vendor.User.UserName + " successfully";
+            TempData["Message"] = "The vendor " + vendor.User.UserName + "'s profile request approved successfully";
             return RedirectToAction(nameof(UpdateProfileRequests));
         }
 

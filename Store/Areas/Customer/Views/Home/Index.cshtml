@@ -5,7 +5,6 @@
 }
 
 
-
 @*<iframe href="https://arabmate.accessline.ps/" src="https://arabmate.accessline.ps/" title="description"></iframe>
 
     <style>
@@ -129,7 +128,7 @@
                         <a onclick="Subscribe(@item.Id, this, `@item.Title`)" type="button" style="color:white" class="btn-sm btn-primary">Subscribe</a>
                         <a asp-action="CampaignDetails" asp-route-CampaignId="@item.Id" type="button" class="btn-sm btn-primary">more</a>
                         <a onclick="Copy(@item.Id)" type="button" style="color:white" class="btn-sm btn-primary">Copy for website</a>
-                        <a onclick="CopyUrl(@item.Id)" type="button" style="color:white" class="btn-sm btn-primary">Copy url</a>
+                        <a onclick="CopyUrl(@item.Id)" type="button" style="color:white; margin-top:10px" class="btn-sm btn-primary">Copy url</a>
 
                     </div>
                 </div>
@@ -216,7 +215,7 @@
                         Notiflix.Notify.Warning("You already subscribed the campaign " + campaignTitle);
                     } else if (returnedData == 1) {
 
-                        Notiflix.Notify.Success("Subscibed the campaign " + campaignTitle + " successfully");
+                        Notiflix.Notify.Success("The campaign " + campaignTitle + " subscibed successfully");
                     } else if (returnedData == -1) {
                         Notiflix.Notify.Failure("Can't Subscibe the campaign " + campaignTitle + ",refresh the page please");
                     }
@@ -245,30 +244,30 @@
                     if (returnedData.status == 1) {
                         const el = document.createElement('textarea');
                         el.value = `<style>
-                                        .clickCard:hover {
-                                            background-color: whitesmoke;
-                                            cursor: pointer;
-                                        }
-                                    </style>
-                                    <div onclick="myClcik` + returnedData.linkId + `()" class="card col-lg-3 col-md-5 col-sm-12 clickCard" style="margin-top: 40px">
-                                        <img class="card-img-top" width="100%" src=`+ returnedData.cam.image + ` alt="Card image cap">
-                                        <div class="card-body">
-                                            <h5 class="card-title">`+ returnedData.cam.title + `</h5>
-                                            <p class="card-text">`+ returnedData.cam.summary + `</p>
+                                            .clickCard:hover {
+                                                background-color: whitesmoke;
+                                                cursor: pointer;
+                                            }
+                                        </style>
+                                        <div onclick="myClcik` + returnedData.linkId + `()" class="card col-lg-3 col-md-5 col-sm-12 clickCard" style="margin-top: 40px">
+                                            <img class="card-img-top" width="100%" src=https://localhost:44356`+ returnedData.cam.image + ` alt="Card image cap">
+                                            <div class="card-body">
+                                                <h5 class="card-title">`+ returnedData.cam.title + `</h5>
+                                                <p class="card-text">`+ returnedData.cam.summary + `</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <script>
-                                        function myClcik` + returnedData.linkId + `() {
-                                            window.open("https://localhost:44356/Marketer/MarketerCampaign/Click?linkId=` + returnedData.linkId + `");
-                                        }
-                                    </script`+ '>';
+                                        <script>
+                                            function myClcik` + returnedData.linkId + `() {
+                                                window.open("https://localhost:44356/Marketer/MarketerCampaign/Click?linkId=` + returnedData.linkId + `");
+                                            }
+                                        </script`+ '>';
                         document.body.appendChild(el);
                         el.select();
                         document.execCommand('copy');
                         document.body.removeChild(el);
 
 
-                        Notiflix.Notify.Success("Copy the campaign " + returnedData.cam.title + " successfully");
+                        Notiflix.Notify.Success("The campaign " + returnedData.cam.title + " Copied successfully");
                     } else if (returnedData.status == -1) {
                         Notiflix.Notify.Failure("Can't Copy the campaign " + returnedData.cam.title + ",refresh the page please");
                     }
@@ -301,7 +300,7 @@
                         document.body.removeChild(el);
 
 
-                        Notiflix.Notify.Success("Copy the url of campaign " + returnedData.cam.title + " successfully");
+                        Notiflix.Notify.Success("The url of campaign " + returnedData.cam.title + " copied successfully");
                     } else if (returnedData.status == -1) {
                         Notiflix.Notify.Failure("Can't Copy the campaign " + returnedData.cam.title + ",refresh the page please");
                     }

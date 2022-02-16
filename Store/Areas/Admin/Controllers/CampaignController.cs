@@ -129,7 +129,7 @@ namespace Store.Areas.Admin.Controllers
                 await _campaignRepository.Remove(campaign);
 
                 TempData["state"] = 1;
-                TempData["Message"] = "Deleted the campaign " + campaign.Title + " successfully";
+                TempData["Message"] = "The campaign " + campaign.Title + " deleted successfully";
                 return RedirectToAction(nameof(Index));
 
             }

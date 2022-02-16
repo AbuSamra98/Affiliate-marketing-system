@@ -150,7 +150,7 @@ namespace Store.Areas.Customer.Controllers
                 await _marketerRepository.Update(marketer);
 
                 TempData["state"] = 1;
-                TempData["Message"] = "Updated profile successfully";
+                TempData["Message"] = "Updated successfully";
                 return RedirectToAction("Index", "Home");
             }
             return View(updateMarketerVM);

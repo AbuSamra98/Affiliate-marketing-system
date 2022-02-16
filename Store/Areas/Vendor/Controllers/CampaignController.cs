@@ -322,7 +322,7 @@ namespace Store.Controllers
 
                 //return Json(new { camTitle = campaign.Title, state = 1 });
                 TempData["state"] = 1;
-                TempData["Message"] = "Added "+ points +" points to the campaign "+ campaign.Title +" successfully";
+                TempData["Message"] = ""+ points + " points added to the campaign " + campaign.Title +" successfully";
                 return RedirectToAction(nameof(Index));
                 //return Json(new { Points = "Successed", state = 1 });
             }

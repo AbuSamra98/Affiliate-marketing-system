@@ -38,7 +38,7 @@ namespace Store.Areas.Admin.Controllers
             _db.SaveChanges();
 
             TempData["state"] = 1;
-            TempData["Message"] = "Edit About Us page successfully";
+            TempData["Message"] = "Updated successfully";
             return RedirectToAction("AboutUs", "Home" , new { area = "Customer"});
         }
 
@@ -56,7 +56,7 @@ namespace Store.Areas.Admin.Controllers
             _db.SaveChanges();
 
             TempData["state"] = 1;
-            TempData["Message"] = "Edit How It Works page successfully";
+            TempData["Message"] = "Updated successfully";
             return RedirectToAction("HowItWorks", "Home", new { area = "Customer" });
         }
 
@@ -74,7 +74,7 @@ namespace Store.Areas.Admin.Controllers
             _db.SaveChanges();
 
             TempData["state"] = 1;
-            TempData["Message"] = "Edit Privacy Policy page successfully";
+            TempData["Message"] = "Updated successfully";
             return RedirectToAction("Privacy", "Home", new { area = "Customer" });
         }
     }

@@ -106,8 +106,12 @@ namespace Store.Areas.Admin.Controllers
                     await _userManager.AddToRoleAsync(user, SD.AdminEndUser);
 
                     TempData["state"] = 1;
-                    TempData["Message"] = "Create new admin successfully";
+                    TempData["Message"] = "Created successfully";
                     return RedirectToAction(nameof(Index));
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
             return View();
@@ -206,7 +210,7 @@ namespace Store.Areas.Admin.Controllers
             }
 
             TempData["state"] = 1;
-            TempData["Message"] = "Edit successfully";
+            TempData["Message"] = "Edited successfully";
             return RedirectToAction(nameof(Index));
         }
     }

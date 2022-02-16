@@ -139,7 +139,7 @@ namespace Store.Areas.Marketer.Controllers
             await _hub.Clients.User(campaign.VendorId).SendAsync("ReceiveMessage", 3, "there is a marketer unsubscribe the campaign " + campaign.Title);
 
             TempData["state"] = 2;
-            TempData["Message"] = "UnSubscibed successfully, You unsubscribed the campaign " + campaign.Title + " successfully";
+            TempData["Message"] = "The campaign " + campaign.Title + " unsubscribed successfully";
             return RedirectToAction(nameof(Index));
 
         }
@@ -203,15 +203,15 @@ namespace Store.Areas.Marketer.Controllers
             }
 
 
-            var httpClient = new HttpClient();
-            var ip = await httpClient.GetStringAsync("https://api.ipify.org");
+            //var httpClient = new HttpClient();
+            //var ip = await httpClient.GetStringAsync("https://api.ipify.org");
 
 
             //this will return ::1 in localhost(solve when its published)
-            //var remoteIpAddress = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+            var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
 
             //check if this click exist with the same day and the same ip address
-            if (!(_db.Clicks.Where(x => x.LinkId == linkId && x.IPAddress == ip && DateTime.Now > x.Date && DateTime.Now.AddDays(1) < x.Date ).Any()))
+            if (!(_db.Clicks.Where(x => x.LinkId == linkId && x.IPAddress == ip && x.Date.AddSeconds(1) > DateTime.Now).Any()))
             {
                 var click = new Click()
                 {
