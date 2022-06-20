@@ -211,7 +211,7 @@ namespace Store.Areas.Marketer.Controllers
             var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
 
             //check if this click exist with the same day and the same ip address
-            if (!(_db.Clicks.Where(x => x.LinkId == linkId && x.IPAddress == ip && x.Date.AddSeconds(1) > DateTime.Now).Any()))
+            if (!(_db.Clicks.Where(x => x.LinkId == linkId && x.IPAddress == ip && x.Date.AddHours(1) > DateTime.Now).Any()))
             {
                 var click = new Click()
                 {

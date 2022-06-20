@@ -5,6 +5,27 @@
 }
 
 
+
+<style>
+    .clickCard:hover {
+        background-color: whitesmoke;
+        cursor: pointer;
+    }
+</style>
+<div onclick="myClcik15()" class="card col-lg-3 col-md-5 col-sm-12 clickCard" style="margin-top: 40px">
+    <img class="card-img-top" width="100%" src=https://localhost:44356\images\CampaignImage\1027.jpg alt="Card image cap">
+    <div class="card-body">
+        <h5 class="card-title">Title</h5>
+        <p class="card-text">Summary Summary Summary</p>
+    </div>
+</div>
+<script>
+    function myClcik15() {
+        window.open("https://localhost:44356/Marketer/MarketerCampaign/Click?linkId=15");
+    }
+</script>
+
+
 @*<iframe href="https://arabmate.accessline.ps/" src="https://arabmate.accessline.ps/" title="description"></iframe>
 
     <style>
@@ -244,23 +265,23 @@
                     if (returnedData.status == 1) {
                         const el = document.createElement('textarea');
                         el.value = `<style>
-                                            .clickCard:hover {
-                                                background-color: whitesmoke;
-                                                cursor: pointer;
-                                            }
-                                        </style>
-                                        <div onclick="myClcik` + returnedData.linkId + `()" class="card col-lg-3 col-md-5 col-sm-12 clickCard" style="margin-top: 40px">
-                                            <img class="card-img-top" width="100%" src=https://localhost:44356`+ returnedData.cam.image + ` alt="Card image cap">
-                                            <div class="card-body">
-                                                <h5 class="card-title">`+ returnedData.cam.title + `</h5>
-                                                <p class="card-text">`+ returnedData.cam.summary + `</p>
+                                                .clickCard:hover {
+                                                    background-color: whitesmoke;
+                                                    cursor: pointer;
+                                                }
+                                            </style>
+                                            <div onclick="myClcik` + returnedData.linkId + `()" class="card col-lg-3 col-md-5 col-sm-12 clickCard" style="margin-top: 40px">
+                                                <img class="card-img-top" width="100%" src=https://localhost:44356`+ returnedData.cam.image + ` alt="Card image cap">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">`+ returnedData.cam.title + `</h5>
+                                                    <p class="card-text">`+ returnedData.cam.summary + `</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <script>
-                                            function myClcik` + returnedData.linkId + `() {
-                                                window.open("https://localhost:44356/Marketer/MarketerCampaign/Click?linkId=` + returnedData.linkId + `");
-                                            }
-                                        </script`+ '>';
+                                            <script>
+                                                function myClcik` + returnedData.linkId + `() {
+                                                    window.open("https://localhost:44356/Marketer/MarketerCampaign/Click?linkId=` + returnedData.linkId + `");
+                                                }
+                                            </script`+ '>';
                         document.body.appendChild(el);
                         el.select();
                         document.execCommand('copy');
